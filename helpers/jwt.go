@@ -6,19 +6,19 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
+	jwt5 "github.com/golang-jwt/jwt/v5"
 )
 
 var secretKey = "your-256-bit-secret"
 
 func GenereteToken(id uint, email string) string {
-	claims := jwt.MapClaims{
+	claims := jwt5.MapClaims{
 		"id":    id,
 		"email": email,
-		"exp":   time.Now().Add(time.Minute * 10),
+		"exp":   time.Now().Add(time.Hour * 100),
 	}
 
-	parseToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	parseToken := jwt5.NewWithClaims(jwt5.SigningMethodHS256, claims)
 	signedToken, err := parseToken.SignedString([]byte(secretKey))
 	if err != nil {
 		return err.Error()
@@ -38,14 +38,14 @@ func VerifyToken(ctx *gin.Context) (interface{}, error) {
 
 	stringToken := strings.Split(headerToken, " ")[1]
 
-	token, _ := jwt.Parse(stringToken, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+	token, _ := jwt5.Parse(stringToken, func(t *jwt5.Token) (interface{}, error) {
+		if _, ok := t.Method.(*jwt5.SigningMethodHMAC); !ok {
 			return nil, errResponse
 		}
 		return []byte(secretKey), nil
 	})
 
-	claims, ok := token.Claims.(jwt.MapClaims)
+	claims, ok := token.Claims.(jwt5.MapClaims)
 	if !ok && !token.Valid {
 		return nil, errResponse
 	}
@@ -69,5 +69,5 @@ func VerifyToken(ctx *gin.Context) (interface{}, error) {
 		return nil, errors.New("token is expired")
 	}
 
-	return token.Claims.(jwt.MapClaims), nil
+	return token.Claims.(jwt5.MapClaims), nil
 }

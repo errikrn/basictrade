@@ -2,6 +2,7 @@ package router
 
 import (
 	"basictrade/controllers"
+	"basictrade/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -9,28 +10,32 @@ import (
 func StartApp() *gin.Engine {
 	router := gin.Default()
 
-	router.POST("auth/register", controllers.AdminRegister)
+	userRouter := router.Group("/auth")
+	{
+		userRouter.POST("/register", controllers.AdminRegister)
+		userRouter.POST("/login", controllers.AdminLogin)
+
+	}
+
+	productRouter := router.Group("/products")
+	{
+		productRouter.GET("/", controllers.GetAllProduct)
+
+		productRouter.Use(middlewares.Authentication())
+		productRouter.POST("/", controllers.CreateProduct)
+		productRouter.PUT("/:productUUID", middlewares.ProductAuthorization(), controllers.UpdateProduct)
+		productRouter.DELETE("/:productUUID", middlewares.ProductAuthorization(), controllers.DeleteProduct)
+	}
+
+	variantRouter := router.Group("/products/variants")
+	{
+		variantRouter.GET("/", controllers.GetAllVariant)
+
+		variantRouter.Use(middlewares.Authentication())
+		variantRouter.POST("/", controllers.CreateVariant)
+		// variantRouter.PUT("/:variantUUID", middlewares.ProductAuthorization(), controllers.UpdateVariant)
+		// variantRouter.DELETE("/:variantUUID", middlewares.ProductAuthorization(), controllers.DeleteVariant)
+	}
 
 	return router
 }
-
-// 	router := gin.Default()
-
-// 	router.GET("/students", handler.GetAllStudents)
-// 	studentRouter := router.Group("/student")
-// 	{
-// 		studentRouter.POST("/", handler.CreateStudent)
-// 		studentRouter.PUT("/:id", handler.UpdateStudent)
-// 		studentRouter.DELETE("/:id", handler.DeleteStudent)
-// 	}
-
-// 	router.GET("/scores", handler.GetAllScores)
-// 	scoreRouter := router.Group("/score")
-// 	{
-// 		scoreRouter.POST("/", handler.CreateScore)
-// 		scoreRouter.PUT("/:id", handler.UpdateScore)
-// 		scoreRouter.DELETE("/:id", handler.DeleteScore)
-// 	}
-
-// 	return router
-// }
