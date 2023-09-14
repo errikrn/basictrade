@@ -1,0 +1,659 @@
+{
+	"info": {
+		"_postman_id": "a2fb1537-fa83-4308-a3cb-0f59152c3318",
+		"name": "basictrade",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28899068"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Erri",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "erri@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "matahari",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/register",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "email",
+									"value": "erri@mail.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "matahari",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/auth/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Apple",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": "/C:/Users/Clarent/Pictures/basictrade/Apple.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Product",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products?page=&limit=&sort=desc&search=",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "limit product"
+								},
+								{
+									"key": "sort",
+									"value": "desc",
+									"description": "sort by id (asc or desc)"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Get All Product with page, limit, sort, search",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/products?page=1&limit=2&sort=desc&search=su",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										},
+										{
+											"key": "limit",
+											"value": "2"
+										},
+										{
+											"key": "sort",
+											"value": "desc"
+										},
+										{
+											"key": "search",
+											"value": "su"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Wed, 06 Sep 2023 13:42:22 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "636"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"limit\": 2,\n        \"page\": 1,\n        \"sort\": \"Id desc\",\n        \"search\": \"su\",\n        \"total_rows\": 2,\n        \"total_pages\": 1,\n        \"rows\": [\n            {\n                \"id\": 3,\n                \"uuid\": \"ce1d8443-60bc-4d3d-a956-ddf4ad293d62\",\n                \"name\": \"Asus\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694000685/basictrade/asus.jpg\",\n                \"admin_id\": 1,\n                \"created_at\": \"2023-09-06T18:44:45.412+07:00\",\n                \"updated_at\": \"2023-09-06T18:44:45.412+07:00\"\n            },\n            {\n                \"id\": 1,\n                \"uuid\": \"5e005ec8-f33c-4aeb-af9d-ee6530878ddc\",\n                \"name\": \"Samsung\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1693812769/basictrade/samsung9636.jpg\",\n                \"admin_id\": 1,\n                \"created_at\": \"2023-09-06T18:43:46.452+07:00\",\n                \"updated_at\": \"2023-09-06T18:43:46.452+07:00\"\n            }\n        ]\n    }\n}"
+						},
+						{
+							"name": "Get All Product",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/products?page=&limit=&sort=desc&search=",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"products"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": ""
+										},
+										{
+											"key": "limit",
+											"value": "",
+											"description": "limit product"
+										},
+										{
+											"key": "sort",
+											"value": "desc",
+											"description": "sort by id (asc or desc)"
+										},
+										{
+											"key": "search",
+											"value": ""
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json; charset=utf-8"
+								},
+								{
+									"key": "Date",
+									"value": "Thu, 14 Sep 2023 12:31:52 GMT"
+								},
+								{
+									"key": "Content-Length",
+									"value": "1686"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"data\": {\n        \"limit\": 10,\n        \"page\": 1,\n        \"sort\": \"Id desc\",\n        \"total_rows\": 6,\n        \"total_pages\": 1,\n        \"rows\": [\n            {\n                \"id\": 7,\n                \"uuid\": \"6e94efd6-d530-47f7-b704-000fce61fed1\",\n                \"name\": \"Vivo\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694067308/basictrade/vivo.png\",\n                \"admin_id\": 2,\n                \"created_at\": \"2023-09-07T13:15:07.629+07:00\",\n                \"updated_at\": \"2023-09-07T13:15:07.629+07:00\"\n            },\n            {\n                \"id\": 6,\n                \"uuid\": \"e927b4ca-5227-4698-bfa6-30294ed32271\",\n                \"name\": \"Oppo\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694067290/basictrade/oppo.png\",\n                \"admin_id\": 2,\n                \"created_at\": \"2023-09-07T13:14:50.497+07:00\",\n                \"updated_at\": \"2023-09-07T13:14:50.497+07:00\"\n            },\n            {\n                \"id\": 5,\n                \"uuid\": \"44cf3196-273a-48b2-8594-6c02c001b176\",\n                \"name\": \"Apple\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694067274/basictrade/Apple.png\",\n                \"admin_id\": 2,\n                \"created_at\": \"2023-09-07T13:14:34.64+07:00\",\n                \"updated_at\": \"2023-09-07T13:14:34.64+07:00\"\n            },\n            {\n                \"id\": 3,\n                \"uuid\": \"1f20a72c-e155-4dfd-8dbe-5a0bffb8a934\",\n                \"name\": \"Xiaomi\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694009292/basictrade/Xiaomi_logo.png\",\n                \"admin_id\": 1,\n                \"created_at\": \"2023-09-06T21:08:13.027+07:00\",\n                \"updated_at\": \"2023-09-06T21:08:13.027+07:00\"\n            },\n            {\n                \"id\": 2,\n                \"uuid\": \"386abd50-8ba4-4e1c-85d2-a4eb165adf33\",\n                \"name\": \"Asus\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694009268/basictrade/asus.jpg\",\n                \"admin_id\": 1,\n                \"created_at\": \"2023-09-06T21:07:49.181+07:00\",\n                \"updated_at\": \"2023-09-06T21:07:49.181+07:00\"\n            },\n            {\n                \"id\": 1,\n                \"uuid\": \"be363e4e-081c-446a-88bd-4c7a4ca5d2c7\",\n                \"name\": \"samsung 3\",\n                \"file\": \"https://res.cloudinary.com/dcfl0kvqz/image/upload/v1694009292/basictrade/Xiaomi_logo.png\",\n                \"admin_id\": 1,\n                \"created_at\": \"2023-09-06T21:07:29.898+07:00\",\n                \"updated_at\": \"2023-09-09T10:51:38.843+07:00\"\n            }\n        ]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "Get Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1va29AbWFpbC5jb20iLCJleHAiOiIyMDIzLTA5LTA2VDEwOjU3OjA0LjY2NjU4MDMrMDc6MDAiLCJpZCI6MX0.1c-DtaVUgqTRI7PfMBRhasnWFjtWeB44VOBR1ogPjik",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:7070/products/:productUUID",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "7070",
+							"path": [
+								"products",
+								":productUUID"
+							],
+							"variable": [
+								{
+									"key": "productUUID",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "samsung 3",
+									"type": "text"
+								},
+								{
+									"key": "file",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/:productUUID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								":productUUID"
+							],
+							"variable": [
+								{
+									"key": "productUUID",
+									"value": "be363e4e-081c-446a-88bd-4c7a4ca5d2c7",
+									"description": "UUID product"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/:productUUID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								":productUUID"
+							],
+							"variable": [
+								{
+									"key": "productUUID",
+									"value": "be363e4e-081c-446a-88bd-4c7a4ca5d2c7",
+									"description": "UUID product"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Variant",
+			"item": [
+				{
+					"name": "Create Variants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "product_id",
+									"value": "6e94efd6-d530-47f7-b704-000fce61fed1",
+									"description": "uuid product",
+									"type": "text"
+								},
+								{
+									"key": "variant_name",
+									"value": "Vivo One Plus",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/variants/",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"variants",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Variants",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/variants?page=&limit=&sort=asc&search=",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"variants"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": ""
+								},
+								{
+									"key": "limit",
+									"value": "",
+									"description": "limit variant"
+								},
+								{
+									"key": "sort",
+									"value": "asc",
+									"description": "sort by id (asc or desc)"
+								},
+								{
+									"key": "search",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Variant",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/variants/:variantUUID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"variants",
+								":variantUUID"
+							],
+							"variable": [
+								{
+									"key": "variantUUID",
+									"value": "c7282f11-57e7-47af-a0bd-c1e9c6b8474f",
+									"description": "UUID variant"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "variant_name",
+									"value": "13 Pro Max",
+									"type": "text"
+								},
+								{
+									"key": "quantity",
+									"value": "100",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{url}}/products/variants/:variantUUID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"variants",
+								":variantUUID"
+							],
+							"variable": [
+								{
+									"key": "variantUUID",
+									"value": "8101b070-4acc-4af7-b68a-d936c511acea"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/products/variants/:variantUUID",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"products",
+								"variants",
+								":variantUUID"
+							],
+							"variable": [
+								{
+									"key": "variantUUID",
+									"value": "b351b9b3-0759-41c4-b53e-6a69240f33bd",
+									"description": "UUID variant"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1va29AbWFpbC5jb20iLCJleHAiOiIyMDIzLTA5LTAyVDA2OjQ0OjQyLjgxNDE1NzIrMDc6MDAiLCJpZCI6Mn0.tP_xX3hqaNDNPyXC0Ro89OV-MJg5_T6hGqW1dpZ-HLM",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
