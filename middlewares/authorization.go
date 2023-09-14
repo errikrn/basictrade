@@ -49,3 +49,51 @@ func ProductAuthorization() gin.HandlerFunc {
 		ctx.Next()
 	}
 }
+
+func VariantAuthorization() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		db := database.GetDB()
+		variantUUID := ctx.Param("variantUUID")
+
+		parsedUUID, err := uuid.Parse(variantUUID)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"error":   "Bad request",
+				"message": err.Error(),
+			})
+			return
+		}
+
+		adminData := ctx.MustGet("adminData").(jwt5.MapClaims)
+		adminID := uint(adminData["id"].(float64))
+
+		Variant := models.Variant{}
+
+		if err := db.Where("uuid = ?", parsedUUID).First(&Variant).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error":   err.Error(),
+				"message": "Variant Not Found",
+			})
+			return
+		}
+
+		Product := models.Product{}
+		if err := db.Where("id = ?", Variant.ProductID).First(&Product).Error; err != nil {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error":   err.Error(),
+				"message": "Product Not Found",
+			})
+			return
+		}
+
+		if Product.AdminID != adminID {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+				"error":   "Unauthorized",
+				"message": "You are not allowed to access this data",
+			})
+			return
+		}
+
+		ctx.Next()
+	}
+}
