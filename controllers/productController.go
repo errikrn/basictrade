@@ -5,12 +5,15 @@ import (
 	"basictrade/helpers"
 	models "basictrade/models/entity"
 	"basictrade/models/requests"
+	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	jwt5 "github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func CreateProduct(ctx *gin.Context) {
@@ -18,9 +21,7 @@ func CreateProduct(ctx *gin.Context) {
 	contentType := helpers.GetContentType(ctx)
 	adminData := ctx.MustGet("adminData").(jwt5.MapClaims)
 	adminID := uint(adminData["id"].(float64))
-
-	newUUID := uuid.New()
-	productUUID := newUUID.String()
+	productUUID := uuid.New().String()
 
 	var productReq requests.ProductRequest
 	if contentType == appJSON {
@@ -57,6 +58,7 @@ func CreateProduct(ctx *gin.Context) {
 		})
 		return
 	}
+
 	admin := models.Admin{ID: adminID}
 	if err := db.First(&admin).Omit("products").Error; err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{
@@ -65,8 +67,10 @@ func CreateProduct(ctx *gin.Context) {
 		})
 		return
 	}
+
 	product.AdminID = adminID
 	product.Admin = &admin
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": product,
 	})
@@ -74,10 +78,50 @@ func CreateProduct(ctx *gin.Context) {
 
 func GetAllProduct(ctx *gin.Context) {
 	db := database.GetDB()
-
+	var page helpers.Pagination
+	limitInt, _ := strconv.Atoi(ctx.Query("limit"))
+	pageInt, _ := strconv.Atoi(ctx.Query("page"))
+	page.Limit = limitInt
+	page.Page = pageInt
+	page.Sort = ctx.Query("sort")
+	page.Search = ctx.Query("search")
 	var products []models.Product
+	fmt.Println("search", page.Search)
 
-	if err := db.Preload("Admin").Find(&products).Error; err != nil {
+	db.Scopes(helpers.Paginate(products, &page, db)).Find(&products)
+	page.Rows = products
+	page.Column = nil
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"data": page,
+	})
+}
+
+func GetProduct(ctx *gin.Context) {
+	db := database.GetDB()
+	adminData := ctx.MustGet("adminData").(jwt5.MapClaims)
+	adminID := uint(adminData["id"].(float64))
+	productUUID := ctx.Param("productUUID")
+	parsedUUID, err := uuid.Parse(productUUID)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"error":   "Bad Request",
+			"message": "Invalid UUID format",
+		})
+		return
+	}
+
+	var product models.Product
+
+	if err := db.Preload("Admin").Where("uuid = ? AND admin_id = ?", parsedUUID, adminID).First(&product).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			ctx.JSON(http.StatusNotFound, gin.H{
+				"error":   "Not Found",
+				"message": "Product not found",
+			})
+			return
+		}
+
 		ctx.JSON(http.StatusInternalServerError, gin.H{
 			"error":   "Internal Server Error",
 			"message": err.Error(),
@@ -86,22 +130,15 @@ func GetAllProduct(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"data": products,
+		"data": product,
 	})
 }
 
 func UpdateProduct(ctx *gin.Context) {
 	db := database.GetDB()
-
-	fmt.Printf("Entering UpdateProduct\n")
-
 	adminData := ctx.MustGet("adminData").(jwt5.MapClaims)
 	adminID := uint(adminData["id"].(float64))
-	fmt.Printf("AdminID: %d\n", adminID)
-
 	productUUID := ctx.Param("productUUID")
-	fmt.Printf("Received productUUID: %s\n", productUUID)
-
 	parsedUUID, err := uuid.Parse(productUUID)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -112,13 +149,13 @@ func UpdateProduct(ctx *gin.Context) {
 	}
 
 	var productReq requests.ProductRequest
-	if err := ctx.ShouldBind(&productReq); err != nil {
+	if err := ctx.Bind(&productReq); err != nil {
+		fmt.Println("here")
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	fileName := helpers.RemoveExtension(productReq.Image.Filename)
-	fmt.Printf("Received filename: %s\n", fileName)
 
 	uploadResult, err := helpers.UploadFile(productReq.Image, fileName)
 	if err != nil {
@@ -135,8 +172,10 @@ func UpdateProduct(ctx *gin.Context) {
 		})
 		return
 	}
+
 	product.Name = productReq.Name
 	product.ImageURL = uploadResult
+
 	if err := db.Debug().Updates(&product).Error; err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"error":   "Bad request",
@@ -144,8 +183,6 @@ func UpdateProduct(ctx *gin.Context) {
 		})
 		return
 	}
-	// kode ini tidak keluar
-	fmt.Printf("Exiting UpdateProduct\n")
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"data": product,

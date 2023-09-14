@@ -10,10 +10,11 @@ import (
 type Product struct {
 	ID        uint      `gorm:"primaryKey;AutoIncrement" json:"id"`
 	UUID      string    `json:"uuid"`
-	Name      string    `gorm:"not null" json:"name" form:"name" valid:"required~Variant name is required"`
+	Name      string    `gorm:"not null" json:"name" form:"name" valid:"required~Product name is required"`
 	ImageURL  string    `gorm:"not null" json:"file" form:"file"`
 	AdminID   uint      `json:"admin_id"`
 	Admin     *Admin    `json:"admin,omitempty" gorm:"association_autoupdate:false"`
+	Variants  []Variant `json:"variants,omitempty"`
 	CreatedAt time.Time `json:"created_at,omitempty"`
 	UpdatedAt time.Time `json:"updated_at,omitempty"`
 }
